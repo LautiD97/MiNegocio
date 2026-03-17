@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<title>MiNegocio - Gestión simple </title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="favicon.png" type="image/x-icon">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+
+
+</head>
+<body>
+
+  <div id="modalPro" class="modal-pro">
+  <div class="modal-content">
+    <h2>🚀 Límite alcanzado</h2>
+    <p>Actualizá a PRO para desbloquear funciones ilimitadas.</p>
+    <button onclick="iniciarPagoPro()">Actualizar ahora</button>
+    <button onclick="cerrarModal()">Cerrar</button>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button onclick="mostrarSeccion('caja')">🧾</button>
+  <button onclick="mostrarSeccion('productos')">📦</button>
+  <button onclick="mostrarSeccion('clientes')">👤</button>
+  <button onclick="mostrarSeccion('pedidos')">📝</button>
+  <button onclick="mostrarSeccion('inicio')">🏠</button>
+</div>
+
+
+<!-- LOGIN -->
+<!-- LOGIN (modificado) -->
+<div id="login" style="width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;">
+  <h2>Acceso a MiNegocio</h2>
+
+  <input id="usuarioLogin" placeholder="Usuario">
+  <input id="claveLogin" type="password" placeholder="Contraseña">
+
+  <button class="btn btn-primary" onclick="login()">Ingresar</button>
+
+  <p style="margin-top:10px; cursor:pointer; color:#2563eb;" onclick="mostrarRecuperacion()">
+    ¿Olvidaste tu contraseña?
+  </p>
+
+  <p style="margin-top:5px; cursor:pointer; color:#2563eb;" onclick="mostrarRegistro()">
+    Crear nuevo usuario
+  </p>
+
+  <!-- FORMULARIO REGISTRO -->
+  <div id="registroUsuario" style="display:none; margin-top:10px; width:100%; max-width:300px;">
+    <input id="nuevoUserLogin" placeholder="Usuario">
+    <input id="nuevaPassLogin" type="password" placeholder="Contraseña">
+    <input id="telefonoUserLogin" placeholder="Teléfono">
+    <input type="checkbox" id="modProductos" onchange="guardarModulos()">
+    <input type="checkbox" id="modClientes" onchange="guardarModulos()">
+    <input type="checkbox" id="modPedidos" onchange="guardarModulos()">
+    <input type="checkbox" id="modEstadisticas" onchange="guardarModulos()">
+    <button class="btn btn-primary" onclick="crearUsuarioLogin()">Crear Usuario</button>
+    <button class="btn" onclick="ocultarRegistro()">Cancelar</button>
+  </div>
+</div>
+
+<!-- RECUPERACIÓN -->
+<div id="recuperacion" style="display:none; width:100%; flex-direction:column; align-items:center; justify-content:center; gap:10px;">
+  <h3>Recuperar contraseña</h3>
+
+  <input id="telefonoRecuperacion" placeholder="Número de teléfono">
+
+  <button class="btn btn-primary" onclick="recuperarClave()">Recuperar</button>
+  <button class="btn" onclick="volverLogin()">Volver</button>
+</div>
+
+<!-- SISTEMA -->
+<div id="sistema" style="display:none; width:100%;">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="menu">
+    <img src="logo.png" alt="MiNegocio" class="logo-img">
+    <div id="badgePro" class="badge-pro">💎 PRO</div>
+    <button id="btnInicio" onclick="mostrarSeccion('inicio')">🏠 Inicio</button>
+    <button id="btnProductos" onclick="mostrarSeccion('productos')">📦 Productos</button>
+    <button id="btnClientes" onclick="mostrarSeccion('clientes')">👤 Clientes</button>
+    <button id="btnPedidos" onclick="mostrarSeccion('pedidos')">📝 Ventas</button>
+    <button id="btnEstadisticas" onclick="mostrarSeccion('estadisticas')">📊 Estadísticas</button>
+    <button onclick="mostrarSeccion('configuracion')">⚙️ Configuración</button>
+    <button onclick="mostrarSeccion('caja')">🧾 Caja</button>
+  </div>
+
+  <div class="main">
+
+    <!-- INICIO -->
+    <div id="inicio" class="section active">
+      <div class="bienvenida">
+  <h2>Bienvenido a Mi-Negocio</h2>
+  <p>Gestióna de manera simple tu Negocio. Controlá tus ventas, productos y clientes en un solo lugar.</p>
+</div>
+<div id="bannerFree" class="banner-free">
+  💎 Estás usando la versión Free.
+  <button onclick="activarPro()">Actualizar ahora</button>
+  <div id="limitesFree" class="limites-free">
+  <p>Productos: <span id="limiteProductos"></span></p>
+  <p>Clientes: <span id="limiteClientes"></span></p>
+  <p>Pedidos: <span id="limitePedidos"></span></p>
+</div>
+
+<div class="dashboard">
+
+  <div class="card">
+    <h3>Ventas hoy</h3>
+    <p id="ventasHoy">$0</p>
+  </div>
+
+  <div class="card">
+    <h3>Pedidos hoy</h3>
+    <p id="pedidosHoy">0</p>
+  </div>
+
+  <div class="card">
+    <h3>Clientes</h3>
+    <p id="clientesTotales">0</p>
+  </div>
+
+  <div class="card">
+    <h3>Stock bajo</h3>
+    <p id="stockBajo">0</p>
+  </div>
+
+</div>
+
+</div>
+
+      <h1>Resumen</h1>
+      <div class="cards">
+        <div class="card"><h3>Pedidos</h3><p id="statPedidos">0</p></div>
+        <div class="card"><h3>Total Vendido</h3><p>$<span id="statTotal">0</span></p></div>
+        <div class="card"><h3>Top Producto</h3><p id="statProducto">-</p></div>
+      </div>
+      <br>
+      <button class="btn btn-primary" onclick="hacerBackup()">💾 Backup</button>
+      <input type="file" onchange="restaurarBackup(this)">
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div id="productos" class="section">
+      <h1>Productos</h1>
+      <input id="nombreProducto" placeholder="Nombre">
+      <input id="precioProducto" type="number" placeholder="Precio">
+      <input id="stockProducto" type="number" placeholder="Stock">
+      <button class="btn btn-primary" onclick="guardarProducto()">Guardar</button>
+
+      <input type="text" id="buscadorProductos" placeholder="Buscar producto..." oninput="filtrarProductos()" />
+      <button onclick="limpiarFiltroProductos()">Limpiar</button>
+
+      <table>
+        <thead><tr><th>Nombre</th><th>Precio</th><th>Stock</th><th></th></tr></thead>
+        <tbody id="tablaProductos"></tbody>
+      </table>
+    </div>
+
+    <!-- CLIENTES -->
+    <div id="clientes" class="section">
+      <h1>Clientes</h1>
+      <input id="nombreCliente" placeholder="Nombre">
+      <input id="telefonoCliente" placeholder="Teléfono">
+      <input id="notaCliente" placeholder="Nota">
+      <button class="btn btn-primary" onclick="guardarCliente()">Guardar</button>
+
+      <input type="text" id="buscadorClientes" placeholder="Buscar cliente..." oninput="filtrarClientes()" />
+      <button onclick="limpiarFiltroVentas()">Limpiar</button>
+      
+      <table>
+        <thead><tr><th>Nombre</th><th>Teléfono</th><th>Nota</th><th></th></tr></thead>
+        <tbody id="tablaClientes"></tbody>
+      </table>
+    </div>
+
+    <!-- PEDIDOS -->
+    <div id="pedidos" class="section">
+      <h1>Ventas</h1>
+
+      <select id="selectCliente"></select>
+      <select id="selectProducto" onchange="actualizarTotal()"></select>
+      <input id="cantidadPedido" type="number" placeholder="Cantidad" oninput="actualizarTotal()">
+      <input id="totalPedido" placeholder="Total" disabled>
+
+      <button class="btn btn-primary" onclick="guardarPedido()">Guardar Pedido</button>
+      <button class="btn btn-primary" onclick="exportarExcel()">📄 Exportar Excel</button>
+
+      <input type="date" id="filtroFecha" onchange="filtrarPedidos()" />
+      <button onclick="limpiarFiltroClientes()">Limpiar</button>
+
+      <table>
+       <thead>
+  <tr style="background:#f1f5f9">
+    <th>Producto</th>
+    <th style="text-align:center">Cant</th>
+    <th>Total</th>
+    <th></th>
+  </tr>
+       </thead>
+        <tbody id="tablaPedidos"></tbody>
+      </table>
+    </div>
+
+    <!-- CAJA / VENTA RÁPIDA -->
+<div id="caja" class="section">
+  <h1>🧾 Caja</h1>
+
+  <div class="cards" id="productosCaja"></div>
+
+<div class="total-container">
+  <h3>Total: $<span id="totalCaja">0</span></h3>
+  
+</div>
+
+  <table>
+    <thead>
+      <tr><th>Producto</th><th>Cant</th><th>Total</th><th></th></tr>
+    </thead>
+    <tbody id="tablaCaja"></tbody>
+  </table>
+
+
+<button class="btn-cobrar" onclick="cobrarCaja()">💰 Cobrar</button>
+<button class="btn btn-danger btn-caja" onclick="cancelarCaja()">❌ Cancelar</button>
+</div>
+
+    <!-- ESTADÍSTICAS -->
+<div id="estadisticas" class="section">
+  <h2>Estadísticas</h2>
+
+  <div id="bloqueProEstadisticas" class="bloque-pro">
+    🔒 Disponible solo en versión PRO
+    <button onclick="activarPro()">Actualizar a PRO</button>
+  </div>
+
+  <canvas id="graficoVentas" style="margin-top:20px;"></canvas>
+</div>
+    <!-- CONFIGURACIÓN -->
+    <div id="configuracion" class="section">
+      <h1>Activación de Módulos</h1>
+      <button class="btn btn-danger" style="margin-top:20px;" onclick="cerrarSesion()">Cerrar sesión</button>
+      <hr><br>
+<h2>Seguridad</h2>
+
+<input id="nuevoUsuario" placeholder="Nuevo usuario">
+<input id="nuevaClave" type="password" placeholder="Nueva contraseña">
+
+<div class="card">
+  <h3>Plan PRO</h3>
+  <p>$9.999 / mes</p>
+  <button class="btn btn-primary" onclick="activarPro()">Activar PRO</button>
+</div>
+
+<button class="btn btn-danger" onclick="desactivarPro()">
+  Cancelar suscripción PRO
+</button> 
+
+<button class="btn btn-primary" onclick="guardarCredenciales()">Guardar Usuario y Contraseña</button>
+
+      <label><input type="checkbox" id="modProductos" onchange="guardarModulos()"> Productos</label><br><br>
+      <label><input type="checkbox" id="modClientes" onchange="guardarModulos()"> Clientes</label><br><br>
+      <label><input type="checkbox" id="modPedidos" onchange="guardarModulos()"> Pedidos</label><br><br>
+      <label><input type="checkbox" id="modEstadisticas" onchange="guardarModulos()"> Estadísticas</label>
+    </div>
+
+  </div>
+</div>
+<script src="Js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="Js/data.js"></script>
+<script src="Js/auth.js"></script>
+<script src="Js/modulos.js"></script>
+<script src="Js/productos.js"></script>
+<script src="Js/clientes.js"></script>
+<script src="Js/pedidos.js"></script>
+<script src="Js/caja.js"></script>
+<script src="Js/estadisticas.js"></script>
+<script src="Js/backup.js"></script>
+<script src="Js/utilidades.js"></script>
+
+
+
+</body>
+
+<div id="modalUpgrade" class="modal-upgrade">
+  <div class="upgrade-content">
+    <h2>💎 MiNegocio PRO</h2>
+    <p>Desbloqueá:</p>
+    <ul>
+      <li>✔ Estadísticas avanzadas</li>
+      <li>✔ Gráficos mensuales</li>
+      <li>✔ Productos ilimitados</li>
+      <li>✔ Clientes ilimitados</li>
+    </ul>
+    <h3>$4.999 / mes</h3>
+    <button class="btn-pro" onclick="activarPro()">Activar ahora</button>
+    <button class="btn-cerrar" onclick="cerrarUpgrade()">Cancelar</button>
+  </div>
+</div>
+
+</html>
