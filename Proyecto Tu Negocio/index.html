@@ -209,15 +209,16 @@
 </button>
 
 <div id="reader" style="width:100%; margin-top:10px;"></div>
-      <!-- 🔎 BUSCADOR (BIEN UBICADO) -->
-      <input 
-        type="text" 
-        id="buscadorCaja" 
-        placeholder="🔎 Buscar o escanear producto..."
-        autocomplete="off"
-      />
-
-      <div class="cards" id="productosCaja"></div>
+      <!-- 🔎 BUSCADOR DE PRODUCTOS -->
+      <div class="buscador-productos-caja">
+        <input 
+          type="text" 
+          id="buscadorCaja" 
+          placeholder="🔎 Buscar producto por nombre o código..."
+          autocomplete="off"
+        />
+        <div id="productosCaja" class="productos-dropdown-caja"></div>
+      </div>
     </div>
 
     <!-- PANEL DERECHO -->
@@ -375,6 +376,16 @@
 <script src="Js/utilidades.js"></script>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
+
+<!-- ALERTA DE SALDO INSUFICIENTE -->
+<div id="alertaSaldoModal" class="alerta-saldo-modal" aria-hidden="true">
+  <div class="alerta-saldo-contenido" role="dialog" aria-modal="true" aria-labelledby="tituloAlertaSaldo">
+    <div class="alerta-saldo-icono">⚠️</div>
+    <h2 id="tituloAlertaSaldo">Saldo insuficiente</h2>
+    <p id="alertaSaldoMensaje"></p>
+    <button type="button" class="btn-alerta-saldo" onclick="cerrarAlertaSaldo()">Entendido</button>
+  </div>
+</div>
 
 </body>
 

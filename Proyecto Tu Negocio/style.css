@@ -936,3 +936,48 @@ body {
 }
 
 
+
+/* ===== CAJA: PRODUCTOS DESPLEGABLES ===== */
+.buscador-productos-caja{position:relative;width:100%;z-index:50}
+.productos-dropdown-caja{
+  position:absolute;top:calc(100% - 8px);left:0;width:100%;
+  max-height:360px;overflow-y:auto;background:#fff;
+  border:1px solid #dbe3ee;border-radius:0 0 12px 12px;
+  box-shadow:0 12px 30px rgba(15,23,42,.15);
+  display:none;padding:6px;
+}
+.productos-dropdown-caja.abierto{display:block}
+.item-producto-caja{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 14px;border-radius:9px;cursor:pointer;
+  background:#fff;border-bottom:1px solid #eef2f7;
+}
+.item-producto-caja:hover{background:#eff6ff}
+.item-producto-caja:last-child{border-bottom:0}
+.producto-caja-info{min-width:0;text-align:left}
+.producto-caja-info strong{display:block;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.producto-caja-info small{color:#64748b}
+.producto-caja-precio{white-space:nowrap;font-weight:700;color:#2563eb}
+.lista-productos-vacia{padding:18px;text-align:center;color:#64748b}
+
+/* ===== ALERTA GRANDE DE SALDO ===== */
+.alerta-saldo-modal{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  padding:20px;background:rgba(15,23,42,.78);backdrop-filter:blur(3px);z-index:99999;
+}
+.alerta-saldo-modal.abierto{display:flex}
+.alerta-saldo-modal .alerta-saldo-contenido{
+  width:min(520px,94vw);background:#fff;border-radius:22px;padding:36px 30px;
+  text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.3);
+}
+.alerta-saldo-icono{
+  width:82px;height:82px;margin:0 auto 16px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:#fee2e2;font-size:44px;
+}
+.alerta-saldo-modal h2{margin:0 0 14px;font-size:30px;color:#991b1b}
+.alerta-saldo-modal p{margin:0;font-size:19px;line-height:1.8;color:#334155}
+.btn-alerta-saldo{
+  margin-top:25px;min-width:190px;padding:14px 24px;border:0;border-radius:10px;
+  background:#2563eb;color:#fff;font-size:17px;font-weight:700;cursor:pointer;
+}
+@media(max-width:768px){.productos-dropdown-caja{max-height:300px}.alerta-saldo-modal .alerta-saldo-contenido{padding:30px 22px}.alerta-saldo-modal h2{font-size:24px}}

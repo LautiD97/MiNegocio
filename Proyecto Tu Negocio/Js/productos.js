@@ -1,8 +1,7 @@
 // ===== PRODUCTOS =====
 
 function guardarProducto() {
-
-if (!esPro() && productos.length >= 5 && editandoProducto === null) {
+  if (!esPro() && editandoProducto === null && !puedeCrearProducto()) {
     abrirModalPro();
     return;
   }
@@ -10,8 +9,9 @@ if (!esPro() && productos.length >= 5 && editandoProducto === null) {
   const nombreInput = document.getElementById("nombreProducto");
   const precioInput = document.getElementById("precioProducto");
   const stockInput = document.getElementById("stockProducto");
-  const codigo = document.getElementById("codigoProducto").value.trim();
+  const codigoInput = document.getElementById("codigoProducto");
 
+  const codigo = codigoInput ? codigoInput.value.trim() : "";
 
   if (
     nombreInput.value.trim() === "" ||
@@ -24,20 +24,24 @@ if (!esPro() && productos.length >= 5 && editandoProducto === null) {
 
   if (editandoProducto !== null) {
     productos[editandoProducto] = {
-      nombre: nombreInput.value,
+      ...productos[editandoProducto],
+      nombre: nombreInput.value.trim(),
       precio: +precioInput.value,
       stock: +stockInput.value
     };
+
+    if (!productos[editandoProducto].codigo && codigo) {
+      productos[editandoProducto].codigo = codigo;
+    }
+
     editandoProducto = null;
   } else {
     productos.push({
-  nombre: nombreInput.value,
-  precio: +precioInput.value,
-  stock: +stockInput.value,
-  codigo: codigo
-});
-
-  
+      nombre: nombreInput.value.trim(),
+      precio: +precioInput.value,
+      stock: +stockInput.value,
+      codigo
+    });
   }
 
   localStorage.setItem("productos", JSON.stringify(productos));
@@ -45,12 +49,13 @@ if (!esPro() && productos.length >= 5 && editandoProducto === null) {
   nombreInput.value = "";
   precioInput.value = "";
   stockInput.value = "";
+  if (codigoInput) codigoInput.value = "";
 
   mostrarProductos();
+  if (typeof actualizarLimites === "function") actualizarLimites();
 }
 
 function mostrarProductos() {
-
   const tabla = document.getElementById("tablaProductos");
   if (!tabla) return;
 
@@ -60,6 +65,7 @@ function mostrarProductos() {
     tabla.innerHTML += `
       <tr>
         <td>${p.nombre}</td>
+        <td>${p.codigo || ""}</td>
         <td>$${p.precio}</td>
         <td>${p.stock}</td>
         <td>
@@ -72,43 +78,46 @@ function mostrarProductos() {
 }
 
 function editarProducto(i) {
-
   const nombreInput = document.getElementById("nombreProducto");
   const precioInput = document.getElementById("precioProducto");
   const stockInput = document.getElementById("stockProducto");
+  const codigoInput = document.getElementById("codigoProducto");
 
   nombreInput.value = productos[i].nombre;
   precioInput.value = productos[i].precio;
   stockInput.value = productos[i].stock;
+  if (codigoInput) codigoInput.value = productos[i].codigo || "";
 
   editandoProducto = i;
 
-  if (typeof mostrarSeccion === "function") {
-    mostrarSeccion("productos");
-  }
+  if (typeof mostrarSeccion === "function") mostrarSeccion("productos");
 }
 
 function eliminarProducto(i) {
   productos.splice(i, 1);
   localStorage.setItem("productos", JSON.stringify(productos));
   mostrarProductos();
+  if (typeof actualizarLimites === "function") actualizarLimites();
 }
 
 function filtrarProductos() {
-
- 
-
-  const texto = document.getElementById("buscadorProductos").value.toLowerCase();
-
+  const input = document.getElementById("buscadorProductos");
   const tabla = document.getElementById("tablaProductos");
+  if (!input || !tabla) return;
+
+  const texto = input.value.toLowerCase();
   tabla.innerHTML = "";
 
   productos
-    .filter(p => p.nombre.toLowerCase().includes(texto))
+    .filter(p =>
+      p.nombre.toLowerCase().includes(texto) ||
+      String(p.codigo || "").toLowerCase().includes(texto)
+    )
     .forEach((p, i) => {
       tabla.innerHTML += `
         <tr>
           <td>${p.nombre}</td>
+          <td>${p.codigo || ""}</td>
           <td>$${p.precio}</td>
           <td>${p.stock}</td>
           <td>
@@ -121,6 +130,7 @@ function filtrarProductos() {
 }
 
 function limpiarFiltroProductos() {
-  document.getElementById("buscarProducto").value = "";
-  renderProductos();
+  const buscador = document.getElementById("buscadorProductos");
+  if (buscador) buscador.value = "";
+  mostrarProductos();
 }

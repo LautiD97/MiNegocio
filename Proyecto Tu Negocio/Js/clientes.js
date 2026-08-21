@@ -1,18 +1,17 @@
 // ===== CLIENTES =====
+
 function generarCodigoCliente() {
-
   let ultimo = localStorage.getItem("ultimoCodigoCliente") || 0;
-
   ultimo = parseInt(ultimo) + 1;
-
   localStorage.setItem("ultimoCodigoCliente", ultimo);
-
-  return ultimo; // 🔥 SOLO NUMERO
+  return ultimo;
 }
 
 function guardarCliente() {
-
-  
+  if (!esPro() && editandoCliente === null && !puedeCrearCliente()) {
+    abrirModalPro();
+    return;
+  }
 
   const nombreInput = document.getElementById("nombreCliente");
   const telefonoInput = document.getElementById("telefonoCliente");
@@ -27,21 +26,22 @@ function guardarCliente() {
   }
 
   if (editandoCliente !== null) {
-   clientes[editandoCliente] = {
-  ...clientes[editandoCliente], // 🔥 mantiene codigo y saldo
-  nombre: nombreInput.value,
-  telefono: telefonoInput.value,
-  nota: notaInput.value
-};
+    clientes[editandoCliente] = {
+      ...clientes[editandoCliente],
+      nombre: nombreInput.value.trim(),
+      telefono: telefonoInput.value.trim(),
+      nota: notaInput.value.trim()
+    };
+
     editandoCliente = null;
   } else {
     clientes.push({
-  codigo: generarCodigoCliente(),
-  nombre: nombreInput.value,
-  telefono: telefonoInput.value,
-  nota: notaInput.value,
-  saldo: 0
-});
+      codigo: generarCodigoCliente(),
+      nombre: nombreInput.value.trim(),
+      telefono: telefonoInput.value.trim(),
+      nota: notaInput.value.trim(),
+      saldo: 0
+    });
   }
 
   localStorage.setItem("clientes", JSON.stringify(clientes));
@@ -51,10 +51,10 @@ function guardarCliente() {
   notaInput.value = "";
 
   mostrarClientes();
+  if (typeof actualizarLimites === "function") actualizarLimites();
 }
 
 function mostrarClientes() {
-
   const tabla = document.getElementById("tablaClientes");
   if (!tabla) return;
 
@@ -79,7 +79,6 @@ function mostrarClientes() {
 }
 
 function editarCliente(i) {
-
   const nombreInput = document.getElementById("nombreCliente");
   const telefonoInput = document.getElementById("telefonoCliente");
   const notaInput = document.getElementById("notaCliente");
@@ -90,29 +89,28 @@ function editarCliente(i) {
 
   editandoCliente = i;
 
-  if (typeof mostrarSeccion === "function") {
-    mostrarSeccion("clientes");
-  }
+  if (typeof mostrarSeccion === "function") mostrarSeccion("clientes");
 }
 
 function eliminarCliente(i) {
   clientes.splice(i, 1);
   localStorage.setItem("clientes", JSON.stringify(clientes));
   mostrarClientes();
+  if (typeof actualizarLimites === "function") actualizarLimites();
 }
 
 function filtrarClientes() {
-
-  
-
-  const texto = document.getElementById("buscadorClientes").value.toLowerCase();
+  const input = document.getElementById("buscadorClientes");
   const tabla = document.getElementById("tablaClientes");
+  if (!input || !tabla) return;
+
+  const texto = input.value.toLowerCase();
   tabla.innerHTML = "";
 
   clientes
     .filter(c =>
       c.nombre.toLowerCase().includes(texto) ||
-      c.codigo.toLowerCase().includes(texto)
+      String(c.codigo ?? "").toLowerCase().includes(texto)
     )
     .forEach((c, i) => {
       tabla.innerHTML += `
@@ -133,14 +131,13 @@ function filtrarClientes() {
 }
 
 function limpiarFiltroClientes() {
-  document.getElementById("buscarCliente").value = "";
-  mostrarClientes();;
+  const buscador = document.getElementById("buscadorClientes");
+  if (buscador) buscador.value = "";
+  mostrarClientes();
 }
 
 function editarSaldo(index) {
-
   const monto = prompt("Ingresar monto (+ suma / - resta):");
-
   if (monto === null) return;
 
   const valor = parseFloat(monto);
@@ -150,10 +147,9 @@ function editarSaldo(index) {
     return;
   }
 
-  clientes[index].saldo = (clientes[index].saldo ?? 0) + valor;
+  clientes[index].saldo =
+    (clientes[index].saldo ?? 0) + valor;
 
   localStorage.setItem("clientes", JSON.stringify(clientes));
-
   mostrarClientes();
 }
-
